@@ -81,19 +81,20 @@ const pacientes: Pacientes[] = [
 ];
 
 // 1a)
+
 let pacientesPediatria: Pacientes[] = [];
 
 const obtenPacientesAsignadosAPediatria = (
   pacientes: Pacientes[]
 ): Pacientes[] => {
-  for (let i = 0; i < pacientes.length; i++) {
-    if (pacientes[i].especialidad === "Pediatra") {
-      pacientesPediatria[pacientesPediatria.length] = pacientes[i];
-    }
-  }
+  pacientesPediatria = pacientes.filter(
+    (paciente) => paciente.especialidad === "Pediatra"
+  );
   return pacientesPediatria;
 };
-console.log(obtenPacientesAsignadosAPediatria(pacientes));
+
+obtenPacientesAsignadosAPediatria(pacientes);
+console.log(pacientesPediatria);
 
 //1b)
 let pacientesPediatriaYMenorA10: Pacientes[] = [];
@@ -101,65 +102,65 @@ let pacientesPediatriaYMenorA10: Pacientes[] = [];
 const obtenPacientesAsignadosAPediatriaYMenorA10 = (
   pacientes: Pacientes[]
 ): Pacientes[] => {
-  for (let i = 0; i < pacientes.length; i++) {
-    if (pacientes[i].especialidad === "Pediatra" && pacientes[i].edad < 10) {
-      pacientesPediatriaYMenorA10[pacientesPediatriaYMenorA10.length] =
-        pacientes[i];
-    }
-  }
+  pacientesPediatriaYMenorA10 = pacientes.filter(
+    (paciente) => paciente.especialidad === "Pediatra" && paciente.edad < 10
+  );
   return pacientesPediatriaYMenorA10;
 };
 
 console.log(obtenPacientesAsignadosAPediatriaYMenorA10(pacientes));
 
-// 2)
+// // 2)
 
 const activarProtocoloUrgencia = (pacientes: Pacientes[]): boolean => {
-  let activarProctolo = false;
-  for (let i = 0; i < pacientes.length; i++) {
-    if (
-      pacientes[i].frecuenciaCardiaca > 100 &&
-      pacientes[i].temperatura > 39
-    ) {
-      activarProctolo = true;
-    }
+  let activarProtocolo = false;
+  const criticalPatients = pacientes.some(
+    (paciente) => paciente.frecuenciaCardiaca > 100 && paciente.temperatura > 39
+  );
+  if (criticalPatients) {
+    activarProtocolo = true;
   }
 
-  console.log(activarProctolo);
-  return activarProctolo;
+  return activarProtocolo;
 };
 
-activarProtocoloUrgencia(pacientes);
+console.log(activarProtocoloUrgencia(pacientes));
 
 //Q3)
+let transformedPacientes: Pacientes[] = [];
 const reasignaPacientesAMedicoFamilia = (
   pacientes: Pacientes[]
 ): Pacientes[] => {
-  for (let i = 0; i < pacientes.length; i++) {
-    if (pacientes[i].especialidad === "Pediatra") {
-      pacientes[i].especialidad = "Medico de familia"; //cant put 3= here as that equality not reassigment
-    }
-  }
-  return pacientes;
+  transformedPacientes = pacientes.map((paciente) => ({
+    ...paciente,
+    especialidad:
+      paciente.especialidad === "Pediatra"
+        ? "Medico de familia"
+        : paciente.especialidad,
+  }));
+
+  return transformedPacientes;
 };
 
 console.log(reasignaPacientesAMedicoFamilia(pacientes));
 
-//Q4)
+// //Q4)
 
 const HayPacientesDePediatria = (pacientes: Pacientes[]): boolean => {
   let PacientesDePediatria = false;
-  for (let i = 0; i < pacientes.length; i++) {
-    if (pacientes[i].especialidad === "Pediatra") {
-      PacientesDePediatria = true;
-    }
+  if (pacientes.some((paciente) => paciente.especialidad === "Pediatra")) {
+    PacientesDePediatria = true;
+    console.error("No se puede la pediatra a casa");
+  } else {
+    console.log("Se puede mandar la Pediatra a casa");
   }
+
   return PacientesDePediatria;
 };
 
 console.log(HayPacientesDePediatria(pacientes));
 
-//Q5)
+// //Q5)
 
 const cuentaPacientesPorEspecialidad = (
   pacientes: Pacientes[]
@@ -169,17 +170,19 @@ const cuentaPacientesPorEspecialidad = (
     pediatria: 0,
     cardiologia: 0,
   };
-  for (let i = 0; i < pacientes.length; i++) {
-    if (pacientes[i].especialidad === "Medico de familia") {
+
+  pacientes.forEach((paciente) => {
+    if (paciente.especialidad === "Medico de familia") {
       numeroPacientesPorEspecialidad.medicoDeFamilia++;
     }
-    if (pacientes[i].especialidad === "Pediatra") {
+    if (paciente.especialidad === "Pediatra") {
       numeroPacientesPorEspecialidad.pediatria++;
     }
-    if (pacientes[i].especialidad === "Cardiólogo") {
+    if (paciente.especialidad === "Cardiólogo") {
       numeroPacientesPorEspecialidad.cardiologia++;
     }
-  }
+  });
+
   return numeroPacientesPorEspecialidad;
 };
 console.log(cuentaPacientesPorEspecialidad(pacientes));
